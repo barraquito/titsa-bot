@@ -6,9 +6,19 @@ authors = ["Sergio Sanchez <barraquito@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.12"
 bottle = "^0.12.25"
 requests = "^2.31.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.9"
+isort = "^5.12"
+
+[tool.isort]
+profile = "black"
+combine_as_imports = "True"
+include_trailing_comma = "True"
+multi_line_output = 3
 
 [build-system]
 requires = ["poetry-core"]

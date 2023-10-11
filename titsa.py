@@ -7,13 +7,13 @@ class DataCleaner:
     @staticmethod
     def clean_str(s):
         try:
-            return s.encode('latin-1').decode('utf-8')
+            return s.encode("latin-1").decode("utf-8")
         except UnicodeDecodeError:
             return s
 
 
 class TitsaApi:
-    STOP_INFO_URL = 'https://titsa.com/ajax/xGetInfoParada.php'
+    STOP_INFO_URL = "https://titsa.com/ajax/xGetInfoParada.php"
 
     def __init__(self, stop_id):
         self.stop_id = stop_id
@@ -21,7 +21,9 @@ class TitsaApi:
 
     def get_stop_info(self):
         if not self.stop_data:
-            response = requests.get(self.STOP_INFO_URL, {'id_parada': self.stop_id}, timeout=5)
+            response = requests.get(
+                self.STOP_INFO_URL, {"id_parada": self.stop_id}, timeout=5
+            )
             self.stop_data = response.json()
         return self.stop_data
 
@@ -32,16 +34,18 @@ class TitsaClient:
         self.cleaner = DataCleaner()
 
     def get_stop_description(self):
-        stop_description = self.api.get_stop_info().get('parada', {}).get('descripcion', '')
+        stop_description = (
+            self.api.get_stop_info().get("parada", {}).get("descripcion", "")
+        )
         return self.cleaner.clean_str(stop_description)
 
     def get_stop_lines(self):
-        lines = self.api.get_stop_info().get('lineas') or []
+        lines = self.api.get_stop_info().get("lineas") or []
         return [
             {
-                'id': line['id'],
-                'time': line['tiempo'],
-                'destination': self.cleaner.clean_str(line['destino'])
+                "id": line["id"],
+                "time": line["tiempo"],
+                "destination": self.cleaner.clean_str(line["destino"]),
             }
             for line in lines
         ]
@@ -50,7 +54,7 @@ class TitsaClient:
 class MessageParser:
     @staticmethod
     def get_stop_id_from_message(message):
-        match = re.search('parada (\d+)', message, flags=re.I)
+        match = re.search("parada (\d+)", message, flags=re.I)
         if match:
             return match.group(1)
         else:
@@ -60,10 +64,7 @@ class MessageParser:
 class WaitingTimeEmoji:
     @staticmethod
     def get_waiting_time_emoji(time):
-        emojis = {
-            "0": "🟢",
-            "1": "🟠"
-        }
+        emojis = {"0": "🟢", "1": "🟠"}
         return emojis.get(str(int(int(time) / 5)), "🔴")
 
 
@@ -74,25 +75,33 @@ class TitsaService:
 
     def get_answer_text(self):
         if not self.stop_id:
-            return 'Lo siento, no entiendo tu mensaje...'
+            return (
+                "Lo siento, no entiendo tu mensaje. Prueba a incluir la "
+                'palabra "parada" seguido del número de parada.'
+            )
         try:
             return self._fetch_stop_info()
         except requests.Timeout:
-            return 'No fue posible obtener información...'
+            return (
+                "No hay información de guaguas cercanas a esta parada. "
+                "Inténtalo en unos minutos."
+            )
 
     def _fetch_stop_info(self):
         stop_description = self.titsa_stop.get_stop_description()
         answer_text = [
-            f"Las próximas guaguas en la parada {self.stop_id} ({stop_description}) son:"]
+            f"Las próximas guaguas en la parada {self.stop_id} ({stop_description}) son:"
+        ]
 
         stop_lines = self.titsa_stop.get_stop_lines()
 
         if not stop_lines:
-            answer_text.append('No hay información de guaguas cercanas...')
+            answer_text.append("No hay información de guaguas cercanas...")
         else:
             for line in stop_lines:
-                emoji = WaitingTimeEmoji.get_waiting_time_emoji(line['time'])
+                emoji = WaitingTimeEmoji.get_waiting_time_emoji(line["time"])
                 answer_text.append(
-                    f"{emoji} {line['id']} ({line['time']} minutos) con destino {line['destination']}")
+                    f"{emoji} {line['id']} ({line['time']} minutos) con destino {line['destination']}"
+                )
 
         return answer_text
