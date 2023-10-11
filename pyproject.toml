@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "titsa-bot"
+version = "0.1.0"
+description = "Telegram bot to get TITSA buses information"
+authors = ["Sergio Sanchez <barraquito@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+bottle = "^0.12.25"
+requests = "^2.31.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
