@@ -25,9 +25,11 @@ class TitsaApi:
 
     def get_stop_info(self):
         if not self.stop_data:
-            logger.info(f"Fetching data for stop ID: {self.stop_id}")
             response = requests.get(
                 self.STOP_INFO_URL, {"id_parada": self.stop_id}, timeout=5
+            )
+            logger.info(
+                f"Successfully fetched data for stop ID: {self.stop_id} ({response.elapsed.total_seconds()}s)"
             )
             self.stop_data = response.json()
         return self.stop_data
@@ -86,7 +88,10 @@ class TitsaService:
             )
         try:
             return self._fetch_stop_info()
-        except requests.Timeout:
+        except requests.Timeout as exc:
+            logger.error(
+                f"Failed to fetch data for stop ID {self.stop_id}. Error: {exc}"
+            )
             return (
                 "No hay información de guaguas cercanas a esta parada. "
                 "Inténtalo en unos minutos."

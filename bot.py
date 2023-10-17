@@ -51,8 +51,10 @@ class TelegramBot(BotHandlerMixin, Bottle):
     def post_handler(self):
         data = bottle_request.json
         response_body = self.prepare_data_for_answer(data)
-        logging.info(f"Sending response: {response_body}")
         self.send_message(response_body)
+        logging.info(
+            f"Sent response to chat ID {response_body['chat_id']}: {response_body['text']}"
+        )
         return response
 
 
