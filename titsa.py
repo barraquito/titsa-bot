@@ -59,7 +59,7 @@ class TitsaClient:
 class MessageParser:
     @staticmethod
     def get_stop_id_from_message(message):
-        match = re.search("parada (\d+)", message, flags=re.I)
+        match = re.search(r"parada (\d+)", message, flags=re.I)
         if match:
             return match.group(1)
         else:
