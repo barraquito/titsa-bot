@@ -1,9 +1,14 @@
+import logging
 import os
 
 import requests
 from bottle import Bottle, request as bottle_request, response
 
 from titsa import MessageParser, TitsaService
+
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 
 class BotHandlerMixin:
@@ -46,6 +51,7 @@ class TelegramBot(BotHandlerMixin, Bottle):
     def post_handler(self):
         data = bottle_request.json
         response_body = self.prepare_data_for_answer(data)
+        logging.info(f"Sending response: {response_body}")
         self.send_message(response_body)
         return response
 

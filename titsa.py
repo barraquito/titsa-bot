@@ -1,6 +1,10 @@
+import logging
 import re
 
 import requests
+
+
+logger = logging.getLogger(__name__)
 
 
 class DataCleaner:
@@ -21,6 +25,7 @@ class TitsaApi:
 
     def get_stop_info(self):
         if not self.stop_data:
+            logger.info(f"Fetching data for stop ID: {self.stop_id}")
             response = requests.get(
                 self.STOP_INFO_URL, {"id_parada": self.stop_id}, timeout=5
             )
