@@ -6,8 +6,10 @@ from bottle import Bottle, request as bottle_request, response
 
 from titsa import MessageParser, TitsaService
 
+logging_level = os.getenv("LOGGING_LEVEL", "INFO")
+
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level=eval(f"logging.{logging_level}"), format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
 
