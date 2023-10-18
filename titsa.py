@@ -103,7 +103,7 @@ class TitsaService:
                 "Inténtalo en unos minutos."
             )
         except TitsaStopDoesNotExist:
-            logger.error(f"API does not return data for the given stop ID {self.stop_id}.")
+            logger.debug(f"API does not return data for the given stop ID {self.stop_id}.")
             return "El número de parada parece incorrecto. Compruebálo y vuelve a intentarlo."
 
     def _fetch_stop_info(self):
