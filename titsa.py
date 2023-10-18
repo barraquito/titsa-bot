@@ -32,6 +32,7 @@ class TitsaApi:
                 f"Successfully fetched data for stop ID: {self.stop_id} ({response.elapsed.total_seconds()}s)"
             )
             self.stop_data = response.json()
+            logger.debug(f"Response data for stop ID {self.stop_id}: {self.stop_data}")
         return self.stop_data
 
 
