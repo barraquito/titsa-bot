@@ -7,6 +7,10 @@ import requests
 logger = logging.getLogger(__name__)
 
 
+class TitsaStopDoesNotExist(Exception):
+    pass
+
+
 class DataCleaner:
     @staticmethod
     def clean_str(s):
@@ -42,9 +46,10 @@ class TitsaClient:
         self.cleaner = DataCleaner()
 
     def get_stop_description(self):
-        stop_description = (
-            self.api.get_stop_info().get("parada", {}).get("descripcion", "")
-        )
+        stop_data = self.api.get_stop_info().get("parada")
+        if not stop_data:
+            raise TitsaStopDoesNotExist
+        stop_description = stop_data.get("descripcion", "")
         return self.cleaner.clean_str(stop_description)
 
     def get_stop_lines(self):
@@ -97,6 +102,9 @@ class TitsaService:
                 "No hay información de guaguas cercanas a esta parada. "
                 "Inténtalo en unos minutos."
             )
+        except TitsaStopDoesNotExist:
+            logger.error(f"API does not return data for the given stop ID {self.stop_id}.")
+            return "El número de parada parece incorrecto. Compruebálo y vuelve a intentarlo."
 
     def _fetch_stop_info(self):
         stop_description = self.titsa_stop.get_stop_description()
