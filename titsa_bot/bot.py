@@ -4,7 +4,7 @@ import os
 import requests
 from bottle import Bottle, request as bottle_request, response
 
-from titsa import MessageParser, TitsaService
+from .titsa import MessageParser, TitsaService
 
 logging_level = os.getenv("LOGGING_LEVEL", "INFO")
 
