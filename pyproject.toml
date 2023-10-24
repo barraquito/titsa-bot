@@ -13,12 +13,21 @@ requests = "^2.31.0"
 [tool.poetry.group.dev.dependencies]
 black = "^23.9"
 isort = "^5.12"
+pytest = "^7.4"
+pytest-cov = "^4.1"
+pytest-sugar = "^0.9"
+requests-mock = "^1.11"
 
 [tool.isort]
 profile = "black"
 combine_as_imports = "True"
 include_trailing_comma = "True"
 multi_line_output = 3
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "."
+]
 
 [build-system]
 requires = ["poetry-core"]
